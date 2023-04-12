@@ -1,36 +1,48 @@
 <script setup lang="ts">
-import { ref, type PropType } from 'vue'
+import { type PropType, ref } from 'vue'
 
 export interface Friend {
   id: string
   name: string
   phone: string
   email: string
+  isFavorite: boolean
 }
 
-const props = defineProps({
-  friend: { type: Object as PropType<Friend>, required: true },
-  isFavourite: { type: Boolean },
+defineProps({
+  friend: {
+    type: Object as PropType<Friend>,
+    required: true,
+  },
 })
 
+const emit = defineEmits<{
+  (e: 'is-favorite', id: string): void
+  (e: 'delete-friend', id: string): void
+}>()
+
 const detailsAreVisible = ref(false)
-const friendIsFavourite = ref(props.isFavourite)
 
 function toggleDetails() {
   detailsAreVisible.value = !detailsAreVisible.value
 }
 
-const toggleFavourite = () => {
-  friendIsFavourite.value = !friendIsFavourite.value
+function deleteFriend(id: string) {
+  emit('delete-friend', id)
+}
+
+const toggleFavourite = (id: string) => {
+  emit('is-favorite', id)
 }
 </script>
 
 <template>
-  <h2>{{ friend.name }} {{ friendIsFavourite ? '(favourite)' : '' }}</h2>
-  <button @click="toggleFavourite">Toggle favourite</button>
+  <h2>{{ friend.name }} {{ friend.isFavorite ? '(favourite)' : '' }}</h2>
+  <button @click="toggleFavourite(friend.id)">Toggle favourite</button>
   <button @click="toggleDetails">{{ detailsAreVisible ? 'Hide' : 'Show' }} Details</button>
   <ul v-if="detailsAreVisible">
     <li><strong>Phone:</strong> {{ friend.phone }}</li>
     <li><strong>Email:</strong> {{ friend.email }}</li>
   </ul>
+  <button @click="deleteFriend(friend.id)">Delete</button>
 </template>
