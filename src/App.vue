@@ -1,34 +1,35 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { KeepAlive, ref } from 'vue'
 
-import BadgeList from './components/BadgeList.vue'
-import BaseCard from './components/BaseCard.vue'
-import CourseGoals from './components/CourseGoals.vue'
-import TheHeader from './components/TheHeader.vue'
-import UserInfo from './components/UserInfo.vue'
+import ActiveGoals from '@/components/ActiveGoals.vue'
+import ManageGoals from '@/components/ManageGoals.vue'
+import TheHeader from '@/components/TheHeader.vue'
 
-const activeUser = reactive({
-  name: 'McPeepee Poopoo',
-  description: 'Site owner and admin',
-  role: 'admin',
-})
+type Components = 'ActiveGoals' | 'ManageGoals' | 'TheHeader'
+const selectedComponent = ref<Components>('ActiveGoals')
+
+const components = {
+  ActiveGoals,
+  ManageGoals,
+  TheHeader,
+}
+
+function setSelectedComponent(name: Components) {
+  selectedComponent.value = name
+}
 </script>
 
 <template>
   <div>
-    <TheHeader />
-    <BadgeList />
-    <UserInfo
-      :full-name="activeUser.name"
-      :info-text="activeUser.description"
-      :role="activeUser.role"
-    />
+    <TheHeader v-once />
 
-    <BaseCard>
-      <CourseGoals #default="slotProps">
-        <h2>{{ slotProps.item }}</h2>
-      </CourseGoals>
-    </BaseCard>
+    <button @click="setSelectedComponent('ActiveGoals')">Active Goals</button>
+    <button @click="setSelectedComponent('ManageGoals')">Manage Goals</button>
+    <button @click="setSelectedComponent('TheHeader')">TheHeader Goals</button>
+
+    <KeepAlive>
+      <component :is="components[selectedComponent]"></component>
+    </KeepAlive>
   </div>
 </template>
 
