@@ -1,44 +1,18 @@
 <script setup lang="ts">
-import { KeepAlive, ref } from 'vue'
+import '@/assets/app.css'
 
-import ActiveGoals from '@/components/ActiveGoals.vue'
-import ManageGoals from '@/components/ManageGoals.vue'
-import TheHeader from '@/components/TheHeader.vue'
+import TheHeader from './components/layouts/TheHeader.vue'
+import TheResources from './components/learning-resources/TheResources.vue'
 
-type Components = 'ActiveGoals' | 'ManageGoals' | 'TheHeader'
-const selectedComponent = ref<Components>('ActiveGoals')
-
-const components = {
-  ActiveGoals,
-  ManageGoals,
-  TheHeader,
-}
-
-function setSelectedComponent(name: Components) {
-  selectedComponent.value = name
+export interface Resource {
+  id: string
+  title: string
+  description: string
+  link: string
 }
 </script>
 
 <template>
-  <div>
-    <TheHeader v-once />
-
-    <button @click="setSelectedComponent('ActiveGoals')">Active Goals</button>
-    <button @click="setSelectedComponent('ManageGoals')">Manage Goals</button>
-    <button @click="setSelectedComponent('TheHeader')">TheHeader Goals</button>
-
-    <KeepAlive>
-      <component :is="components[selectedComponent]"></component>
-    </KeepAlive>
-  </div>
+  <TheHeader title="Remember Me" />
+  <TheResources />
 </template>
-
-<style>
-html {
-  font-family: sans-serif;
-}
-
-body {
-  margin: 0;
-}
-</style>

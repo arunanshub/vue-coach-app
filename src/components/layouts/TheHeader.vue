@@ -1,6 +1,12 @@
+<script setup lang="ts">
+defineProps<{
+  title: string
+}>()
+</script>
+
 <template>
   <header>
-    <h1>More on Vue Components</h1>
+    <h1>{{ title }}</h1>
   </header>
 </template>
 
@@ -8,10 +14,10 @@
 header {
   width: 100%;
   height: 5rem;
+  background-color: #640032;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #14005e;
 }
 
 header h1 {
