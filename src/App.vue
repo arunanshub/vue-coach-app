@@ -1,10 +1,26 @@
-<template>
-  <TheForm />
-</template>
+<script lang="ts">
+export const enum Rating {
+  Poor = 'poor',
+  Average = 'average',
+  Great = 'great',
+}
+</script>
 
 <script setup lang="ts">
-import TheForm from './components/TheForm.vue'
+import LearningSurvey from './components/survey/LearningSurvey.vue'
+import UserExperiences from './components/survey/UserExperiences.vue'
+
+export interface SurveyData {
+  id: string
+  name: string
+  rating: Rating
+}
 </script>
+
+<template>
+  <LearningSurvey></LearningSurvey>
+  <UserExperiences></UserExperiences>
+</template>
 
 <style>
 * {
@@ -17,6 +33,5 @@ html {
 
 body {
   margin: 0;
-  background-color: #292929;
 }
 </style>
