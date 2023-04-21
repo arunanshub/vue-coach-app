@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { provide, reactive, ref } from 'vue'
+import { provide, reactive } from 'vue'
 
 import TheNavigation from './components/nav/TheNavigation.vue'
-import TeamsList from './components/teams/TeamsList.vue'
-import UsersList from './components/users/UsersList.vue'
 
 export interface Team {
   id: string
@@ -31,31 +29,16 @@ const users = reactive<User[]>([
 ])
 provide('teams', teams)
 provide('users', users)
-
-// page switcher
-const activePage = ref('TeamsList')
-function setActivePage(page: string) {
-  activePage.value = page
-}
-</script>
-
-<script lang="ts">
-// Register the names of components that will be used dynamically.
-// NOTE: It is not possible to use the composition API to manage components
-// dynamically without using additional hacks.
-export default {
-  components: {
-    TeamsList,
-    UsersList,
-  },
-}
 </script>
 
 <template>
-  <TheNavigation @set-page="setActivePage"></TheNavigation>
+  <TheNavigation />
   <main>
-    <component :is="activePage"></component>
+    <RouterView />
   </main>
+  <footer>
+    <RouterView name="footer"></RouterView>
+  </footer>
 </template>
 
 <style>

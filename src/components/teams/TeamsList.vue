@@ -7,16 +7,11 @@ const teams = inject<Team[]>('teams', [])
 </script>
 
 <template>
+  <RouterView />
   <ul>
-    <teams-item
-      v-for="team in teams"
-      :key="team.id"
-      :name="team.name"
-      :member-count="team.members.length"
-    ></teams-item>
+    <TeamsItem v-for="team in teams" :key="team.id" :name="team.name" :member-count="team.members.length" :id="team.id" />
   </ul>
 </template>
-
 
 <style scoped>
 ul {

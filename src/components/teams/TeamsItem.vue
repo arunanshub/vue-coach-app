@@ -1,15 +1,27 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+import type { RouteLocationRaw } from 'vue-router'
+
+const props = defineProps<{
   name: string
   memberCount: number
+  id: string
 }>()
+
+const teamMembersLink = computed((): RouteLocationRaw => {
+  return {
+    name: 'team-members',
+    params: { teamId: props.id },
+    query: { sort: 'asc' },
+  }
+})
 </script>
 
 <template>
   <li>
     <h3>{{ name }}</h3>
     <div class="team-members">{{ memberCount }} Members</div>
-    <a href="#">View Members</a>
+    <RouterLink :to="teamMembersLink">View Members</RouterLink>
   </li>
 </template>
 
