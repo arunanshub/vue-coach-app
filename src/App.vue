@@ -1,44 +1,46 @@
 <script setup lang="ts">
-import { provide, reactive } from 'vue'
+import { ref } from 'vue'
 
-import TheNavigation from './components/nav/TheNavigation.vue'
+import BaseModal from '@/components/BaseModal.vue'
 
-export interface Team {
-  id: string
-  name: string
-  members: string[]
+const dialogIsVisible = ref(false)
+const animatedBlock = ref(false)
+
+function showDialog() {
+  dialogIsVisible.value = true
 }
 
-export interface User {
-  id: string
-  fullName: string
-  role: string
+function hideDialog() {
+  dialogIsVisible.value = false
 }
 
-const teams = reactive<Team[]>([
-  { id: 't1', name: 'Frontend Engineers', members: ['u1', 'u2'] },
-  { id: 't2', name: 'Backend Engineers', members: ['u1', 'u2', 'u3'] },
-  { id: 't3', name: 'Client Consulting', members: ['u4', 'u5'] },
-])
-const users = reactive<User[]>([
-  { id: 'u1', fullName: 'Max Schwarz', role: 'Engineer' },
-  { id: 'u2', fullName: 'Praveen Kumar', role: 'Engineer' },
-  { id: 'u3', fullName: 'Julie Jones', role: 'Engineer' },
-  { id: 'u4', fullName: 'Alex Blackfield', role: 'Consultant' },
-  { id: 'u5', fullName: 'Marie Smith', role: 'Consultant' },
-])
-provide('teams', teams)
-provide('users', users)
+function animateBlock() {
+  animatedBlock.value = true
+}
+
+const paraIsVisible = ref(false)
 </script>
 
 <template>
-  <TheNavigation />
-  <main>
-    <RouterView />
-  </main>
-  <footer>
-    <RouterView name="footer"></RouterView>
-  </footer>
+  <div class="container">
+    <div class="block" :class="{ animate: animatedBlock }"></div>
+    <button @click="animateBlock">Animate</button>
+  </div>
+
+  <div class="container">
+    <Transition>
+      <p v-if="paraIsVisible">Hello visibility</p>
+    </Transition>
+    <button @click="paraIsVisible = !paraIsVisible">Invisible</button>
+  </div>
+
+  <BaseModal @close="hideDialog" v-if="dialogIsVisible">
+    <p>This is a test dialog!</p>
+    <button @click="hideDialog">Close it!</button>
+  </BaseModal>
+  <div class="container">
+    <button @click="showDialog">Show Dialog</button>
+  </div>
 </template>
 
 <style>
@@ -52,5 +54,86 @@ html {
 
 body {
   margin: 0;
+}
+
+button {
+  font: inherit;
+  padding: 0.5rem 2rem;
+  border: 1px solid #810032;
+  border-radius: 30px;
+  background-color: #810032;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover,
+button:active {
+  background-color: #a80b48;
+  border-color: #a80b48;
+}
+
+.block {
+  width: 8rem;
+  height: 8rem;
+  background-color: #290033;
+  margin-bottom: 2rem;
+}
+
+.container {
+  max-width: 40rem;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 2rem;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+}
+
+.animate {
+  animation: slide-scale 0.3s ease-out forwards;
+}
+
+.v-enter-from {
+  /* opacity: 0; */
+  /* transform: translateY(-30px); */
+}
+
+.v-enter-active {
+  animation: slide-scale 0.3s ease-out;
+}
+
+.v-enter-to {
+  /* opacity: 1; */
+  /* transform: translateY(0); */
+}
+
+.v-leave-from {
+  /* opacity: 1; */
+  /* transform: translateY(0); */
+}
+
+.v-leave-active {
+  animation: slide-scale 0.3s ease-out;
+}
+
+.v-leave-to {
+  /* opacity: 0; */
+  /* transform: translateY(-30px); */
+}
+
+@keyframes slide-scale {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+
+  70% {
+    transform: translateX(-120px) scale(1.1);
+  }
+
+  100% {
+    transform: translateX(-150px) scale(1);
+  }
 }
 </style>
