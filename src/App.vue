@@ -1,46 +1,38 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useAuthStore } from './stores/auth'
+import { useUsersStore } from '@/stores/users'
+import { computed } from 'vue'
 
-import BaseModal from '@/components/BaseModal.vue'
+import TheCounter from './components/TheCounter.vue'
+import BaseContainer from '@/components/BaseContainer.vue'
+import UserAuth from '@/components/UserAuth.vue'
+import UserDataForm from '@/components/UserDataForm.vue'
 
-const dialogIsVisible = ref(false)
-const animatedBlock = ref(false)
+const users = useUsersStore()
+const auth = useAuthStore()
 
-function showDialog() {
-  dialogIsVisible.value = true
-}
-
-function hideDialog() {
-  dialogIsVisible.value = false
-}
-
-function animateBlock() {
-  animatedBlock.value = true
-}
-
-const paraIsVisible = ref(false)
+const latestUser = computed(() => users.latestUser)
 </script>
 
 <template>
-  <div class="container">
-    <div class="block" :class="{ animate: animatedBlock }"></div>
-    <button @click="animateBlock">Animate</button>
-  </div>
+  <BaseContainer title="Auth">
+    <UserAuth />
+  </BaseContainer>
 
-  <div class="container">
-    <Transition>
-      <p v-if="paraIsVisible">Hello visibility</p>
-    </Transition>
-    <button @click="paraIsVisible = !paraIsVisible">Invisible</button>
-  </div>
+  <BaseContainer title="Pinia" v-if="auth.isLoggedIn">
+    <TheCounter />
+  </BaseContainer>
 
-  <BaseModal @close="hideDialog" v-if="dialogIsVisible">
-    <p>This is a test dialog!</p>
-    <button @click="hideDialog">Close it!</button>
-  </BaseModal>
-  <div class="container">
-    <button @click="showDialog">Show Dialog</button>
-  </div>
+  <BaseContainer title="Add User Data" v-if="auth.isLoggedIn">
+    <UserDataForm />
+  </BaseContainer>
+
+  <BaseContainer title="Latest User Data">
+    <p v-if="latestUser">
+      Latest user: {{ latestUser.name }} who is {{ latestUser.age }} yo.
+    </p>
+    <p v-else>No user data yet.</p>
+  </BaseContainer>
 </template>
 
 <style>
@@ -54,86 +46,5 @@ html {
 
 body {
   margin: 0;
-}
-
-button {
-  font: inherit;
-  padding: 0.5rem 2rem;
-  border: 1px solid #810032;
-  border-radius: 30px;
-  background-color: #810032;
-  color: white;
-  cursor: pointer;
-}
-
-button:hover,
-button:active {
-  background-color: #a80b48;
-  border-color: #a80b48;
-}
-
-.block {
-  width: 8rem;
-  height: 8rem;
-  background-color: #290033;
-  margin-bottom: 2rem;
-}
-
-.container {
-  max-width: 40rem;
-  margin: 2rem auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 2rem;
-  border: 2px solid #ccc;
-  border-radius: 12px;
-}
-
-.animate {
-  animation: slide-scale 0.3s ease-out forwards;
-}
-
-.v-enter-from {
-  /* opacity: 0; */
-  /* transform: translateY(-30px); */
-}
-
-.v-enter-active {
-  animation: slide-scale 0.3s ease-out;
-}
-
-.v-enter-to {
-  /* opacity: 1; */
-  /* transform: translateY(0); */
-}
-
-.v-leave-from {
-  /* opacity: 1; */
-  /* transform: translateY(0); */
-}
-
-.v-leave-active {
-  animation: slide-scale 0.3s ease-out;
-}
-
-.v-leave-to {
-  /* opacity: 0; */
-  /* transform: translateY(-30px); */
-}
-
-@keyframes slide-scale {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-
-  70% {
-    transform: translateX(-120px) scale(1.1);
-  }
-
-  100% {
-    transform: translateX(-150px) scale(1);
-  }
 }
 </style>
