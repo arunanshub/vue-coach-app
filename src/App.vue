@@ -1,38 +1,34 @@
+<script lang="ts">
+interface CartItem {
+  productId: string
+  title: string
+  image: string
+  price: number
+  qty: number
+}
+
+export interface Cart {
+  items: CartItem[]
+  total: number
+  qty: number
+}
+
+export interface Product {
+  id: string
+  image: string
+  title: string
+  description: string
+  price: number
+}
+</script>
+
 <script setup lang="ts">
-import { useAuthStore } from './stores/auth'
-import { useUsersStore } from '@/stores/users'
-import { computed } from 'vue'
-
-import TheCounter from './components/TheCounter.vue'
-import BaseContainer from '@/components/BaseContainer.vue'
-import UserAuth from '@/components/UserAuth.vue'
-import UserDataForm from '@/components/UserDataForm.vue'
-
-const users = useUsersStore()
-const auth = useAuthStore()
-
-const latestUser = computed(() => users.latestUser)
+import TheHeader from './components/nav/TheHeader.vue'
 </script>
 
 <template>
-  <BaseContainer title="Auth">
-    <UserAuth />
-  </BaseContainer>
-
-  <BaseContainer title="Pinia" v-if="auth.isLoggedIn">
-    <TheCounter />
-  </BaseContainer>
-
-  <BaseContainer title="Add User Data" v-if="auth.isLoggedIn">
-    <UserDataForm />
-  </BaseContainer>
-
-  <BaseContainer title="Latest User Data">
-    <p v-if="latestUser">
-      Latest user: {{ latestUser.name }} who is {{ latestUser.age }} yo.
-    </p>
-    <p v-else>No user data yet.</p>
-  </BaseContainer>
+  <TheHeader />
+  <RouterView />
 </template>
 
 <style>

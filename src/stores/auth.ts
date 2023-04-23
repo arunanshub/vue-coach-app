@@ -1,4 +1,3 @@
-import { useCounterStore } from './counter'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
@@ -10,9 +9,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoggedIn = true
     },
     logout() {
-      const counter = useCounterStore()
       this.isLoggedIn = false
-      counter.$reset()
     },
   },
 })
