@@ -1,29 +1,5 @@
-<script lang="ts">
-interface CartItem {
-  productId: string
-  title: string
-  image: string
-  price: number
-  qty: number
-}
-
-export interface Cart {
-  items: CartItem[]
-  total: number
-  qty: number
-}
-
-export interface Product {
-  id: string
-  image: string
-  title: string
-  description: string
-  price: number
-}
-</script>
-
 <script setup lang="ts">
-import TheHeader from './components/nav/TheHeader.vue'
+import TheHeader from '@/components/layout/TheHeader.vue'
 </script>
 
 <template>
@@ -32,12 +8,14 @@ import TheHeader from './components/nav/TheHeader.vue'
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 * {
   box-sizing: border-box;
 }
 
 html {
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 body {

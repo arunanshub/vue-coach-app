@@ -1,15 +1,28 @@
 import { defineStore } from 'pinia'
 
+interface State {
+  /** id of the user who is using the app.
+   */
+  userId: string
+}
+
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    isLoggedIn: false,
+  state: (): State => ({
+    userId: 'c3',
   }),
+
   actions: {
-    login() {
-      this.isLoggedIn = true
+    login(userId: string) {
+      this.userId = userId
     },
     logout() {
-      this.isLoggedIn = false
+      this.$reset()
+    },
+  },
+
+  getters: {
+    isLoggedIn(state) {
+      return !!state.userId
     },
   },
 })
