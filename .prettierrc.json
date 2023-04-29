@@ -6,7 +6,12 @@
   "singleQuote": true,
   "printWidth": 80,
   "trailingComma": "es5",
-  "importOrder": ["^./assets/(.*)$", "^./components/(.*)$"],
+  "importOrder": [
+    "^@/components/(.*)$",
+    "^@/pages/(.*)$",
+    "^@/stores/(.*)$",
+    "^[./]"
+  ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }
