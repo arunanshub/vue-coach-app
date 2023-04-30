@@ -38,6 +38,6 @@ export const useRequestsStore = defineStore('requests', {
     },
     hasRequestsForCurrentCoach() {
       return this.requestsForCurrentCoach.length > 0
-    }
+    },
   },
 })
