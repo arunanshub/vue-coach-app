@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
-
 import CoachFilter, {
   type AreaFilter,
 } from '@/components/coaches/CoachFilter.vue'
 import CoachItem from '@/components/coaches/CoachItem.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseCard from '@/components/ui/BaseCard.vue'
-
 import { useCoachStore } from '@/stores/coaches'
 
 // get the coach data

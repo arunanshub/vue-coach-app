@@ -2,10 +2,8 @@
 import { toTypedSchema } from '@vee-validate/zod'
 import { ErrorMessage, Field, Form, useForm } from 'vee-validate'
 import { array, number, object, string } from 'zod'
-
 import { useAuthStore } from '@/stores/auth'
 import { useCoachStore } from '@/stores/coaches'
-
 import BaseButton from '../ui/BaseButton.vue'
 
 const { handleSubmit, errors, isSubmitting } = useForm({

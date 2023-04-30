@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-
 import RequestItem from '@/components/requests/RequestItem.vue'
 import BaseCard from '@/components/ui/BaseCard.vue'
-
 import { useRequestsStore } from '@/stores/requests'
 
 const requestsStore = useRequestsStore()

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
 import NotFound from '@/pages/NotFound.vue'
 import CoachDetail from '@/pages/coaches/CoachDetail.vue'
 import CoachRegistration from '@/pages/coaches/CoachRegistration.vue'

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
-
 import BaseCard from '@/components/ui/BaseCard.vue'
 
 export interface AreaFilter {

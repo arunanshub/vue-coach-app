@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-
 import CoachForm from '@/components/coaches/CoachForm.vue'
 import BaseCard from '@/components/ui/BaseCard.vue'
 

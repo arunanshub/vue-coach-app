@@ -12,6 +12,5 @@
     "^@/stores/(.*)$",
     "^[./]"
   ],
-  "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }
