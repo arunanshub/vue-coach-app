@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from './stores/auth'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,12 +26,26 @@ export const router = createRouter({
     {
       name: 'register',
       path: '/register',
+      meta: {
+        needsLogIn: true,
+      },
       component: () => import('@/pages/coaches/CoachRegistration.vue'),
     },
     {
       name: 'requests',
       path: '/requests',
+      meta: {
+        needsLogIn: true,
+      },
       component: () => import('@/pages/requests/RequestsReceived.vue'),
+    },
+    {
+      name: 'auth',
+      path: '/auth',
+      meta: {
+        needsLogOut: true,
+      },
+      component: () => import('@/pages/auth/UserAuth.vue'),
     },
     {
       name: 'not-found',
@@ -38,4 +53,14 @@ export const router = createRouter({
       component: () => import('@/pages/NotFound.vue'),
     },
   ],
+})
+
+router.beforeEach((to, _, next) => {
+  const authStore = useAuthStore()
+  if (to.meta.needsLogIn && !authStore.isLoggedIn) {
+    return next({ name: 'auth' })
+  } else if (to.meta.needsLogOut && authStore.isLoggedIn) {
+    return next({ name: 'coaches' })
+  }
+  next()
 })
