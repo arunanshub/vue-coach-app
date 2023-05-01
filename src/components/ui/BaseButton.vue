@@ -50,6 +50,11 @@ button:active {
   border-color: #270041;
 }
 
+button:disabled {
+  background-color: #c6c6c6;
+  border-color: #c6c6c6;
+}
+
 .flat {
   background-color: transparent;
   color: #3a0061;
