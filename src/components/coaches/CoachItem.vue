@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import BaseBadge from '@/components/ui/BaseBadge.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import type { Coach } from '@/stores/coaches'
@@ -8,8 +8,6 @@ const props = defineProps<{ coach: Coach }>()
 const fullName = computed(
   () => `${props.coach.firstName} ${props.coach.lastName}`
 )
-
-const show = ref(true)
 </script>
 
 <template>
