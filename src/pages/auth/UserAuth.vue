@@ -48,7 +48,6 @@ const isFormErrorFree = computed(() => {
 
 // submission handler
 const onSubmit = handleSubmit(async (submitted) => {
-  console.log(submitted)
   try {
     if (isSignupPage.value) {
       await auth.signup(submitted.email, submitted.password)
