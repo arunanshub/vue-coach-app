@@ -1,21 +1,42 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 import RequestItem from '@/components/requests/RequestItem.vue'
 import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseDialog from '@/components/ui/BaseDialog.vue'
+import BaseSpinner from '@/components/ui/BaseSpinner.vue'
 import { useRequestsStore } from '@/stores/requests'
 
 const requestsStore = useRequestsStore()
 const { requestsForCurrentCoach } = storeToRefs(requestsStore)
+
+const errorMessage = ref<string>()
+function loadRequests() {
+  errorMessage.value = undefined
+  requestsStore.loadRequests().catch((error: Error) => {
+    errorMessage.value = error.message
+  })
+}
+
+loadRequests()
 </script>
 
 <template>
   <section>
+    <BaseDialog
+      :show="!!errorMessage"
+      title="An Error Occurred!"
+      @close="loadRequests"
+    >
+      Failed to load requests: {{ errorMessage }}
+    </BaseDialog>
     <BaseCard>
       <header>
         <h2>Requests Recieved</h2>
       </header>
 
-      <ul v-if="requestsStore.hasRequestsForCurrentCoach">
+      <BaseSpinner v-if="requestsStore.isLoading" />
+      <ul v-else-if="requestsStore.hasRequestsForCurrentCoach">
         <RequestItem
           v-for="req in requestsForCurrentCoach"
           :email="req.userEmail"
