@@ -1,4 +1,4 @@
-# Coach App
+# Vue Coach App
 
 This chronicle bears witness to my earnest quest to attain erudition and
 mastery in the art of Vue.js and all its appurtenant parts, machinations,
