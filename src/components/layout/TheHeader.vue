@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import BaseButton from '../ui/BaseButton.vue'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+async function onLogout() {
+  await authStore.logout()
+  router.replace({ name: 'coaches' })
+}
+</script>
+
 <template>
   <header>
     <nav>
@@ -6,7 +20,15 @@
       </h1>
       <ul>
         <li><NavLink to-name="coaches">All Coaches</NavLink></li>
-        <li><NavLink to-name="requests">Requests</NavLink></li>
+        <li>
+          <NavLink v-if="authStore.isLoggedIn" to-name="requests">
+            Requests
+          </NavLink>
+          <NavLink v-else to-name="auth">Login</NavLink>
+        </li>
+        <li v-if="authStore.isLoggedIn">
+          <BaseButton @click.once="onLogout">Log Out</BaseButton>
+        </li>
       </ul>
     </nav>
   </header>
