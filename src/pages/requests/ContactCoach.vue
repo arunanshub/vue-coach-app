@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
 import { ErrorMessage, Field, useForm } from 'vee-validate'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { object, string } from 'zod'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import { useRequestsStore } from '@/stores/requests'
 
-const { handleSubmit, isSubmitting } = useForm({
+const { handleSubmit, isSubmitting, errors } = useForm({
   validationSchema: toTypedSchema(
     object({
       email: string().email(),
@@ -17,17 +18,21 @@ const { handleSubmit, isSubmitting } = useForm({
   ),
 })
 
+const isFormErrorFree = computed(() => {
+  return Object.keys(errors.value).length === 0
+})
+
 const requestsStore = useRequestsStore()
 const route = useRoute()
 const router = useRouter()
 
 const onSubmit = handleSubmit(async (submitted) => {
-  requestsStore.submitRequest({
+  await requestsStore.submitRequest({
     coachId: route.params.id as string,
     userEmail: submitted.email,
     message: submitted.message,
   })
-  router.replace({ name: 'coaches' })
+  router.replace({ name: 'coach', params: { id: route.params.id } })
 })
 </script>
 
@@ -35,22 +40,20 @@ const onSubmit = handleSubmit(async (submitted) => {
   <form @submit="onSubmit">
     <div class="form-control">
       <label for="email">Your Email</label>
-      <Field name="email" type="email" />
-      <ErrorMessage name="email" v-slot="{ message }">
-        <p>{{ message }}</p>
-      </ErrorMessage>
+      <Field name="email" type="email" :validate-on-input="true" />
+      <ErrorMessage name="email" as="p" />
     </div>
 
     <div class="form-control">
       <label for="message">Message</label>
-      <Field name="message" as="textarea" rows="5" />
-      <ErrorMessage name="message" v-slot="{ message }">
-        <p>{{ message }}</p>
-      </ErrorMessage>
+      <Field name="message" as="textarea" rows="5" :validate-on-input="true" />
+      <ErrorMessage name="message" as="p" />
     </div>
 
     <div class="actions">
-      <BaseButton :disabled="isSubmitting">Send Message</BaseButton>
+      <BaseButton :disabled="!isFormErrorFree || isSubmitting">
+        Send Message
+      </BaseButton>
     </div>
   </form>
 </template>
