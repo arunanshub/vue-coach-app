@@ -13,34 +13,36 @@ const fullName = computed(() => `${coach?.firstName} ${coach?.lastName}`)
 </script>
 
 <template>
-  <section>
-    <BaseCard>
-      <h2>{{ fullName }}</h2>
-      <h3>${{ coach?.hourlyRate }}/hour</h3>
-    </BaseCard>
-  </section>
+  <div>
+    <section>
+      <BaseCard>
+        <h2>{{ fullName }}</h2>
+        <h3>${{ coach?.hourlyRate }}/hour</h3>
+      </BaseCard>
+    </section>
 
-  <section>
-    <BaseCard>
-      <header>
-        <h2>Interested? Reach out now!</h2>
-        <BaseButton to-name="contact" :props="{ id: coach?.id }">
-          Contact
-        </BaseButton>
-      </header>
-      <RouterView />
-    </BaseCard>
-  </section>
+    <section>
+      <BaseCard>
+        <header>
+          <h2>Interested? Reach out now!</h2>
+          <BaseButton to-name="contact" :props="{ id: coach?.id }">
+            Contact
+          </BaseButton>
+        </header>
+        <RouterView />
+      </BaseCard>
+    </section>
 
-  <section>
-    <BaseCard>
-      <BaseBadge
-        v-for="area in coach?.areas"
-        :key="area"
-        :type="area"
-        :title="area"
-      />
-      <p>{{ coach?.description }}</p>
-    </BaseCard>
-  </section>
+    <section>
+      <BaseCard>
+        <BaseBadge
+          v-for="area in coach?.areas"
+          :key="area"
+          :type="area"
+          :title="area"
+        />
+        <p>{{ coach?.description }}</p>
+      </BaseCard>
+    </section>
+  </div>
 </template>
