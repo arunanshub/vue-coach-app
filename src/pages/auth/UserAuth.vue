@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import { object, string } from 'zod'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseDialog from '@/components/ui/BaseDialog.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -38,7 +39,7 @@ const reactiveSchema = computed(() => {
 })
 
 // connect schema to form
-const { handleSubmit, errors, isSubmitting } = useForm({
+const { handleSubmit, errors, isSubmitting, resetForm } = useForm({
   validationSchema: computed(() => toTypedSchema(reactiveSchema.value)),
 })
 
@@ -47,6 +48,7 @@ const isFormErrorFree = computed(() => {
 })
 
 // submission handler
+const errorMessage = ref<string>()
 const onSubmit = handleSubmit(async (submitted) => {
   try {
     if (isSignupPage.value) {
@@ -55,51 +57,60 @@ const onSubmit = handleSubmit(async (submitted) => {
       await auth.login(submitted.email, submitted.password)
     }
   } catch (error) {
-    // some error happened show modal
-    console.log(error)
-    // TODO: add modal
+    errorMessage.value = (error as Error).message
+    return
   }
   router.replace({ name: 'coaches' })
 })
+
+function handleError() {
+  errorMessage.value = undefined
+  resetForm()
+}
 </script>
 
 <template>
-  <BaseCard>
-    <form @submit="onSubmit">
-      <div class="form-control">
-        <label for="email">Email</label>
-        <Field type="email" name="email" :validate-on-input="true" />
-        <ErrorMessage as="p" name="email" />
-      </div>
-      <div class="form-control">
-        <label for="password">Password</label>
-        <Field
-          type="password"
-          name="password"
-          autocomplete="on"
-          :validate-on-input="true"
-        />
-        <ErrorMessage as="p" name="password" />
-      </div>
-      <div class="form-control" v-if="isSignupPage">
-        <label for="confirm">Repeat Password</label>
-        <Field
-          type="password"
-          name="confirm"
-          autocomplete="on"
-          :validate-on-input="true"
-        />
-        <ErrorMessage as="p" name="confirm" />
-      </div>
+  <div>
+    <BaseDialog :show="!!errorMessage" title="Failed" @close="handleError">
+      Failed to {{ isSignupPage ? 'Sign Up' : 'Login' }}: {{ errorMessage }}
+    </BaseDialog>
+    <BaseCard>
+      <form @submit="onSubmit">
+        <div class="form-control">
+          <label for="email">Email</label>
+          <Field type="email" name="email" :validate-on-input="true" />
+          <ErrorMessage as="p" name="email" />
+        </div>
+        <div class="form-control">
+          <label for="password">Password</label>
+          <Field
+            type="password"
+            name="password"
+            autocomplete="on"
+            :validate-on-input="true"
+          />
+          <ErrorMessage as="p" name="password" />
+        </div>
+        <div class="form-control" v-if="isSignupPage">
+          <label for="confirm">Repeat Password</label>
+          <Field
+            type="password"
+            name="confirm"
+            autocomplete="on"
+            :validate-on-input="true"
+          />
+          <ErrorMessage as="p" name="confirm" />
+        </div>
 
-      <BaseButton :disabled="!isFormErrorFree || isSubmitting">
-        {{ isSignupPage ? 'Sign Up' : 'Login' }}
-      </BaseButton>
-      <BaseButton type="button" mode="flat" @click="toggleSignupPage">
-        {{ isSignupPage ? 'Login' : 'Sign Up' }} instead
-      </BaseButton>
-    </form>
-  </BaseCard>
+        <BaseButton :disabled="!isFormErrorFree || isSubmitting">
+          {{ isSignupPage ? 'Sign Up' : 'Login' }}
+        </BaseButton>
+        <BaseButton type="button" mode="flat" @click="toggleSignupPage">
+          {{ isSignupPage ? 'Login' : 'Sign Up' }} instead
+        </BaseButton>
+      </form>
+    </BaseCard>
+  </div>
 </template>
 
 <style scoped>
