@@ -1,29 +1,44 @@
+import { db } from '@/firebase'
+import { get, push, query, ref, set } from 'firebase/database'
 import { defineStore } from 'pinia'
-import { v4 as uuidv4 } from 'uuid'
 import { useAuthStore } from './auth'
 
-interface RequestData {
+interface CoachingRequest {
   coachId: string
   userEmail: string
   message: string
 }
 
-interface CoachRequest extends RequestData {
+interface CoachingRequestWithID extends CoachingRequest {
   id: string
 }
 
 interface State {
-  requests: CoachRequest[]
+  requests: CoachingRequestWithID[]
+  isLoading: boolean
 }
 
 export const useRequestsStore = defineStore('requests', {
   state: (): State => ({
     requests: [],
+    isLoading: false,
   }),
 
   actions: {
-    submitRequest(request: RequestData) {
-      this.requests.push({ id: uuidv4(), ...request })
+    async submitRequest(request: CoachingRequest) {
+      const newRequestRef = push(ref(db, 'requests'))
+      await set(newRequestRef, { ...request })
+      this.requests.push({ id: newRequestRef.key as string, ...request })
+    },
+    async loadRequests() {
+      this.isLoading = true
+      const coachesRes = await get(query(ref(db, 'requests')))
+      const requests = [] as CoachingRequestWithID[]
+      coachesRes.forEach((child) => {
+        requests.push({ id: child.key as string, ...child.val() })
+      })
+      this.requests = requests
+      this.isLoading = false
     },
   },
 
