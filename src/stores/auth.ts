@@ -1,21 +1,37 @@
+import { auth } from '@/firebase'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth'
 import { defineStore } from 'pinia'
 
 interface State {
   /** id of the user who is using the app.
    */
-  userId: string
+  userId?: string
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): State => ({
-    userId: 'c3',
+    userId: undefined,
   }),
 
   actions: {
-    login(userId: string) {
-      this.userId = userId
+    async signup(username: string, password: string) {
+      const cred = await createUserWithEmailAndPassword(
+        auth,
+        username,
+        password
+      )
+      this.userId = cred.user.uid
     },
-    logout() {
+    async login(username: string, password: string) {
+      const cred = await signInWithEmailAndPassword(auth, username, password)
+      this.userId = cred.user.uid
+    },
+    async logout() {
+      await signOut(auth)
       this.$reset()
     },
   },
@@ -25,4 +41,5 @@ export const useAuthStore = defineStore('auth', {
       return !!state.userId
     },
   },
+  persist: true,
 })
