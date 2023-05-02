@@ -1,3 +1,5 @@
+import { db } from '@/firebase'
+import { get, query, ref, set } from 'firebase/database'
 import { defineStore } from 'pinia'
 
 export interface Coach {
@@ -11,50 +13,70 @@ export interface Coach {
 
 interface State {
   coaches: Coach[]
-  isUserCoach: boolean
+  isLoading: boolean
+  lastFetch?: number
 }
 
 export const useCoachStore = defineStore('coaches', {
   state: (): State => ({
-    isUserCoach: false,
-    coaches: [
-      {
-        id: 'c1',
-        firstName: 'Maximilian',
-        lastName: 'Schwarzmüller',
-        areas: ['frontend', 'backend', 'career'],
-        description:
-          "I'm Maximilian and I've worked as a freelance web developer for years. Let me help you become a developer as well!",
-        hourlyRate: 30,
-      },
-      {
-        id: 'c2',
-        firstName: 'Julie',
-        lastName: 'Jones',
-        areas: ['frontend', 'career'],
-        description:
-          'I am Julie and as a senior developer in a big tech company, I can help you get your first job or progress in your current role.',
-        hourlyRate: 30,
-      },
-    ],
+    coaches: [],
+    isLoading: false,
+    lastFetch: undefined,
   }),
 
   actions: {
-    setCoaches(coaches: Coach[]) {
+    setFetchTimestamp() {
+      this.lastFetch = Date.now()
+    },
+    async loadCoaches(forceRefresh = false) {
+      if (!this.shouldUpdate && !forceRefresh) {
+        return
+      }
+      this.setFetchTimestamp()
+      this.isLoading = true
+      const coachesRes = await get(query(ref(db, 'coaches')))
+      const coaches = [] as Coach[]
+      coachesRes.forEach((child) => {
+        coaches.push({ id: child.key as string, ...child.val() })
+      })
       this.coaches = coaches
+      this.isLoading = false
     },
     getCoach(id: string) {
       return this.coaches.find((coach) => coach.id === id)
     },
-    register(coach: Coach) {
+    isUserCoach(userId: string) {
+      return !!this.getCoach(userId)
+    },
+    async register(coach: Coach) {
+      if (this.isUserCoach(coach.id)) {
+        throw new Error('User is already a coach')
+      }
+
+      const newCoachRef = ref(db, `coaches/${coach.id}`)
+      await set(newCoachRef, {
+        firstName: coach.firstName,
+        lastName: coach.lastName,
+        description: coach.description,
+        areas: coach.areas,
+        hourlyRate: coach.hourlyRate,
+      })
       this.coaches.push(coach)
-      this.isUserCoach = true
     },
   },
 
   getters: {
     hasCoaches(state) {
-      return !!state.coaches.length
+      return !state.isLoading && state.coaches.length > 0
     },
+    shouldUpdate(): boolean {
+      if (!this.lastFetch) {
+        return true
+      }
+      return (Date.now() - this.lastFetch) / 1000 > 60
+    },
+  },
+  persist: {
+    storage: sessionStorage,
   },
 })
