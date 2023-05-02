@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
 import { ErrorMessage, Field, Form, useForm } from 'vee-validate'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { array, number, object, string } from 'zod'
 import { useAuthStore } from '@/stores/auth'
 import { useCoachStore } from '@/stores/coaches'
 import BaseButton from '../ui/BaseButton.vue'
 
+// emitted when user has submitted the form
+const emit = defineEmits<{ (e: 'has-submitted'): void }>()
+
+// connect schema to form
 const { handleSubmit, errors, isSubmitting } = useForm({
   validationSchema: toTypedSchema(
     object({
@@ -23,13 +29,19 @@ const { handleSubmit, errors, isSubmitting } = useForm({
   ),
 })
 
-// emitted when user has submitted the form
-const emit = defineEmits<{ (e: 'has-submitted'): void }>()
+const isFormErrorFree = computed(() => {
+  return Object.keys(errors.value).length === 0
+})
 
+const router = useRouter()
 const coachStore = useCoachStore()
 const authStore = useAuthStore()
 
+// submission handler
 const onSubmit = handleSubmit(async (submitted) => {
+  if (!authStore.userId) {
+    return router.replace({ name: 'auth' })
+  }
   await coachStore.register({
     id: authStore.userId,
     firstName: submitted.firstName!,
@@ -101,11 +113,10 @@ const onSubmit = handleSubmit(async (submitted) => {
         />
         <label for="career">Career Advisory</label>
       </div>
-
       <ErrorMessage name="areas" as="p" />
     </div>
 
-    <BaseButton :disabled="isSubmitting">
+    <BaseButton :disabled="!isFormErrorFree || isSubmitting">
       {{ isSubmitting ? 'Registering...' : 'Register' }}
     </BaseButton>
   </form>
