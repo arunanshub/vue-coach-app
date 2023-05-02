@@ -4,6 +4,8 @@ This chronicle bears witness to my earnest quest to attain erudition and
 mastery in the art of Vue.js and all its appurtenant parts, machinations,
 and complexities.
 
+![Website Image](static/website.png)
+
 ## Customize configuration
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).
