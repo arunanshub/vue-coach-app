@@ -4,9 +4,9 @@ import TheHeader from '@/components/layout/TheHeader.vue'
 
 <template>
   <TheHeader />
-  <RouterView v-slot="{ Component }">
+  <RouterView v-slot="{ Component: component }">
     <Transition name="route" mode="out-in">
-      <component :is="Component"></component>
+      <Component :is="component" />
     </Transition>
   </RouterView>
 </template>
