@@ -1,14 +1,14 @@
-import { fileURLToPath, URL } from 'node:url'
-
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import autoprefixer from 'autoprefixer'
-import purgecss from '@fullhuman/postcss-purgecss'
-import legacy from '@vitejs/plugin-legacy'
+import browserslistToEsbuild from 'browserslist-to-esbuild'
+import cssnano from 'cssnano'
+import { URL, fileURLToPath } from 'node:url'
+import postcssPresetEnv from 'postcss-preset-env'
+import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), legacy()],
+  plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -17,30 +17,15 @@ export default defineConfig({
   esbuild: {
     legalComments: 'none',
   },
+  build: {
+    target: browserslistToEsbuild(),
+  },
   css: {
     postcss: {
       plugins: [
+        postcssPresetEnv(),
         autoprefixer(),
-        purgecss({
-          content: [`./*.html`, `./src/**/*.vue`],
-          defaultExtractor(content) {
-            const contentWithoutStyleBlocks = content.replace(
-              /<style[^]+?<\/style>/gi,
-              ''
-            )
-            return (
-              contentWithoutStyleBlocks.match(
-                /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g
-              ) || []
-            )
-          },
-          safelist: [
-            /-(leave|enter|appear)(|-(to|from|active))$/,
-            /^(?!(|.*?:)cursor-move).+-move$/,
-            /^router-link(|-exact)-active$/,
-            /data-v-.*/,
-          ],
-        }),
+        cssnano({ preset: 'default' }),
       ],
     },
   },
