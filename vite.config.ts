@@ -1,5 +1,4 @@
 import vue from '@vitejs/plugin-vue'
-import autoprefixer from 'autoprefixer'
 import browserslistToEsbuild from 'browserslist-to-esbuild'
 import cssnano from 'cssnano'
 import { URL, fileURLToPath } from 'node:url'
@@ -24,7 +23,6 @@ export default defineConfig({
     postcss: {
       plugins: [
         postcssPresetEnv(),
-        autoprefixer(),
         cssnano({ preset: 'default' }),
       ],
     },
